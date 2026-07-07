@@ -4,6 +4,7 @@ import com.xaris.eventticketing.exception.*;
 import com.xaris.eventticketing.model.*;
 import com.xaris.eventticketing.repository.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +23,7 @@ public class ReservationService {
         this.reservationRepository = reservationRepository;
         this.ticketService = ticketService;
     }
-
+    @Transactional
     public Reservation createReservation(String userId, String eventId, int ticketQuantity){
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Event event = eventRepository.findById(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
@@ -48,7 +49,7 @@ public class ReservationService {
         Reservation reservation = getReservationById(id);
         reservationRepository.delete(reservation);
     }
-
+    @Transactional
     public Reservation fulfillReservation(Long id){
         Reservation reservation = getReservationById(id);
         if(reservation.getReservationStatus() == ReservationStatus.FULFILLED){

@@ -32,10 +32,6 @@ public class ReservationController {
     @PostMapping()
     public ResponseEntity<Reservation> createReservation(@Valid @RequestBody CreateReservationRequest
                                                                      request){
-        System.out.println("REQUEST = " + request);
-        System.out.println("USER ID = " + request.getUserId());
-        System.out.println("EVENT ID = " + request.getEventId());
-        System.out.println("CAPACITY = " + request.getCapacity());
         return  ResponseEntity.status(201).body(reservationService.createReservation(
                 request.getUserId(), request.getEventId(), request.getCapacity()));
     }

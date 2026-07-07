@@ -22,6 +22,8 @@ public class Event {
     private LocalDateTime startsAt;
     @PositiveOrZero
     private int ticketsRemaining;
+    @Version
+    private Long version;
 
 
     public Event(){}
@@ -83,5 +85,9 @@ public class Event {
         return "ID: " + this.id + " Title:" + this.title + " Location: " + this.location
                 + " Venue: " + this.venue.getName() + " Starts at: " + this.startsAt
                 + " Remaining tickets: " + this.ticketsRemaining;
+    }
+
+    public Long getVersion() {
+        return version;
     }
 }
