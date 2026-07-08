@@ -1,11 +1,14 @@
 package com.xaris.eventticketing.controller;
 
 import com.xaris.eventticketing.dto.reservation.CreateReservationRequest;
+import com.xaris.eventticketing.dto.reservation.ReservationDTO;
 import com.xaris.eventticketing.model.Reservation;
 import com.xaris.eventticketing.service.ReservationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +33,7 @@ public class ReservationController {
             description = "Retrieves a reservation using its unique identifier."
     )
     @GetMapping("/{id}")
-    public Reservation getReservationById(@PathVariable Long id){
+    public ReservationDTO getReservationById(@PathVariable Long id){
         return reservationService.getReservationById(id);
     }
 
@@ -38,9 +41,9 @@ public class ReservationController {
             summary = "Get all reservations",
             description = "Retrieves all reservations in the system."
     )
-    @GetMapping()
-    public List<Reservation> getAllReservations(){
-        return reservationService.getAllReservations();
+    @GetMapping
+    public Page<ReservationDTO> getAllReservations(Pageable pageable) {
+        return reservationService.getAllReservations(pageable);
     }
 
     @Operation(
@@ -48,10 +51,11 @@ public class ReservationController {
             description = "Create a pending reservation for a user if enough tickets are available."
     )
     @PostMapping()
-    public ResponseEntity<Reservation> createReservation(@Valid @RequestBody CreateReservationRequest
+    public ResponseEntity<ReservationDTO> createReservation(@Valid @RequestBody CreateReservationRequest
                                                                      request){
-        return  ResponseEntity.status(201).body(reservationService.createReservation(
-                request.getUserId(), request.getEventId(), request.getCapacity()));
+        ReservationDTO created = reservationService.createReservation(
+                request.getUserId(), request.getEventId(), request.getCapacity());
+        return  ResponseEntity.status(201).body(created);
     }
 
     @Operation(
@@ -69,7 +73,7 @@ public class ReservationController {
             description = "Marks a reservation as fulfilled and generates the corresponding ticket."
     )
     @PatchMapping("/{id}/fulfill")
-    public Reservation updateReservationStatus(@PathVariable Long id){
+    public ReservationDTO updateReservationStatus(@PathVariable Long id){
         return reservationService.fulfillReservation(id);
     }
 }

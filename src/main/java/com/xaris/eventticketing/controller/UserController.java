@@ -3,11 +3,14 @@ package com.xaris.eventticketing.controller;
 import com.xaris.eventticketing.dto.user.UpdateUserEmailRequest;
 import com.xaris.eventticketing.dto.user.UpdateUserNameRequest;
 import com.xaris.eventticketing.dto.user.UpdateUserPasswordHashRequest;
+import com.xaris.eventticketing.dto.user.UserDTO;
 import com.xaris.eventticketing.model.User;
 import com.xaris.eventticketing.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,8 +35,8 @@ public class UserController {
             description = "Retrieves all users in the system."
     )
     @GetMapping
-    public List<User> getAllUsers(){
-        return userService.getAllUsers();
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        return userService.getAllUsers(pageable);
     }
 
     @Operation(
@@ -41,7 +44,7 @@ public class UserController {
             description = "Retrieves a user using its unique identifier."
     )
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable String id){
+    public UserDTO getUserById(@PathVariable String id){
         return userService.getUserById(id);
     }
 
@@ -50,8 +53,9 @@ public class UserController {
             description = "Creates a new user in the system."
     )
     @PostMapping()
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user){
-        return ResponseEntity.status(201).body(userService.createUser(user));
+    public ResponseEntity<UserDTO> addUser(@Valid @RequestBody User user){
+        UserDTO created = userService.createUser(user);
+        return ResponseEntity.status(201).body(created);
     }
 
     @Operation(
@@ -69,7 +73,7 @@ public class UserController {
             description = "Updates an existing user's name."
     )
     @PatchMapping("/{id}/name")
-    public User updateUserName(@PathVariable String id, @Valid @RequestBody UpdateUserNameRequest request){
+    public UserDTO updateUserName(@PathVariable String id, @Valid @RequestBody UpdateUserNameRequest request){
         return userService.updateUserName(id,request.getName());
     }
 
@@ -78,7 +82,7 @@ public class UserController {
             description = "Updates an existing user's email."
     )
     @PatchMapping("/{id}/email")
-    public User updateUserEmail(@PathVariable String id, @Valid @RequestBody UpdateUserEmailRequest request){
+    public UserDTO updateUserEmail(@PathVariable String id, @Valid @RequestBody UpdateUserEmailRequest request){
         return userService.updateUserEmail(id,request.getEmail());
     }
 
@@ -87,7 +91,7 @@ public class UserController {
             description = "Updates an existing user's password."
     )
     @PatchMapping("/{id}/password")
-    public User updateUserPasswordHash(@PathVariable String id, @Valid @RequestBody  UpdateUserPasswordHashRequest request){
+    public UserDTO updateUserPasswordHash(@PathVariable String id, @Valid @RequestBody  UpdateUserPasswordHashRequest request){
         return userService.updateUserPasswordHash(id,request.getPasswordHash());
     }
 }

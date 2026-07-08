@@ -3,11 +3,14 @@ package com.xaris.eventticketing.controller;
 import com.xaris.eventticketing.dto.venue.UpdateVenueAddressRequest;
 import com.xaris.eventticketing.dto.venue.UpdateVenueCapacityRequest;
 import com.xaris.eventticketing.dto.venue.UpdateVenueNameRequest;
+import com.xaris.eventticketing.dto.venue.VenueDTO;
 import com.xaris.eventticketing.model.Venue;
 import com.xaris.eventticketing.service.VenueService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,9 +33,9 @@ public class VenueController {
             summary = "Get all venues",
             description = "Retrieves all venues in the system."
     )
-    @GetMapping()
-    public List<Venue> getVenues(){
-        return venueService.getAllVenues();
+    @GetMapping
+    public Page<VenueDTO> getAllVenues(Pageable pageable) {
+        return venueService.getAllVenues(pageable);
     }
 
     @Operation(
@@ -40,7 +43,7 @@ public class VenueController {
             description = "Retrieves a venue using its unique identifier."
     )
     @GetMapping("/{id}")
-    public Venue getVenueById(@PathVariable String id){
+    public VenueDTO getVenueById(@PathVariable String id){
         return venueService.getVenueById(id);
     }
 
@@ -49,8 +52,9 @@ public class VenueController {
             description = "Creates a new venue in the system."
     )
     @PostMapping()
-    public ResponseEntity<Venue> addVenue(@Valid @RequestBody Venue venue){
-        return ResponseEntity.status(201).body(venueService.createVenue(venue));
+    public ResponseEntity<VenueDTO> addVenue(@Valid @RequestBody Venue venue){
+        VenueDTO created = venueService.createVenue(venue);
+        return ResponseEntity.status(201).body(created);
     }
 
     @Operation(
@@ -68,7 +72,7 @@ public class VenueController {
             description = "Updates an existing venue's name."
     )
     @PatchMapping ("/{id}/name")
-    public Venue updateVenueName (@PathVariable String id,@Valid @RequestBody UpdateVenueNameRequest request){
+    public VenueDTO updateVenueName (@PathVariable String id,@Valid @RequestBody UpdateVenueNameRequest request){
         return venueService.updateVenueName(id, request.getName());
     }
 
@@ -77,7 +81,7 @@ public class VenueController {
             description = "Updates an existing venue's address."
     )
     @PatchMapping("{id}/address")
-    public Venue updateVenueAddress (@PathVariable String id,@Valid @RequestBody UpdateVenueAddressRequest reqeust ){
+    public VenueDTO updateVenueAddress (@PathVariable String id,@Valid @RequestBody UpdateVenueAddressRequest reqeust ){
         return venueService.updateAddress(id, reqeust.getAddress());
     }
 
@@ -86,7 +90,7 @@ public class VenueController {
             description = "Updates an existing venue's capacity."
     )
     @PatchMapping("/{id}/capacity")
-    public Venue updateVenueCapacity (@PathVariable String id,@Valid @RequestBody UpdateVenueCapacityRequest request ){
+    public VenueDTO updateVenueCapacity (@PathVariable String id,@Valid @RequestBody UpdateVenueCapacityRequest request ){
         return venueService.updateCapacity(id,request.getCapacity());
     }
 

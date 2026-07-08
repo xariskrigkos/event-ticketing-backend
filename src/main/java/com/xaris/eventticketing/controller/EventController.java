@@ -1,14 +1,13 @@
 package com.xaris.eventticketing.controller;
 
-import com.xaris.eventticketing.dto.event.UpdateEventLocationRequest;
-import com.xaris.eventticketing.dto.event.UpdateEventStartsAtRequest;
-import com.xaris.eventticketing.dto.event.UpdateEventTitleRequest;
-import com.xaris.eventticketing.dto.event.UpdateEventVenueRequest;
+import com.xaris.eventticketing.dto.event.*;
 import com.xaris.eventticketing.model.Event;
 import com.xaris.eventticketing.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +30,8 @@ public class EventController {
             description = "Retrieves all events in the system."
     )
     @GetMapping()
-    public List<Event> getAllEvents(){
-        return eventService.getAllEvents();
+    public Page<EventDTO> getAllEvents(Pageable pageable) {
+        return eventService.getAllEvents(pageable);
     }
 
     @Operation(
@@ -40,8 +39,8 @@ public class EventController {
             description = "Retrieves an event using its unique identifier."
     )
     @GetMapping("/{id}")
-    public Event getEventById(@PathVariable String id){
-        return eventService.getEventById(id);
+    public EventDTO getEventById(@PathVariable String id){
+        return  eventService.getEventById(id);
     }
 
     @Operation(
@@ -49,8 +48,9 @@ public class EventController {
             description = "Creates a new event associated with a venue."
     )
     @PostMapping()
-    public ResponseEntity<Event> addEvent(@RequestBody Event event){
-        return ResponseEntity.status(201).body(eventService.createEvent(event));
+    public ResponseEntity<EventDTO> addEvent(@RequestBody Event event){
+        EventDTO created = eventService.createEvent(event);
+        return ResponseEntity.status(201).body(created);
     }
 
     @Operation(
@@ -68,7 +68,7 @@ public class EventController {
             description = "Assigns or updates the title of the event."
     )
     @PatchMapping("/{id}/title")
-    public Event updateEventTitle (@PathVariable String id, @Valid @RequestBody UpdateEventTitleRequest request){
+    public EventDTO updateEventTitle (@PathVariable String id, @Valid @RequestBody UpdateEventTitleRequest request){
         return eventService.updateEventTitle(id, request.getTitle());
     }
 
@@ -77,7 +77,7 @@ public class EventController {
             description = "Assigns or updates the location associated with an event."
     )
     @PatchMapping("/{id}/location")
-    public Event updateEventLocation (@PathVariable String id, @Valid @RequestBody UpdateEventLocationRequest request){
+    public EventDTO updateEventLocation (@PathVariable String id, @Valid @RequestBody UpdateEventLocationRequest request){
         return eventService.updateLocation(id, request.getLocation());
     }
 
@@ -86,7 +86,7 @@ public class EventController {
             description = "Assigns or updates the starting time associated with an event."
     )
     @PatchMapping("/{id}/startsat")
-    public Event updateEventStartsAt (@PathVariable String id,@Valid @RequestBody UpdateEventStartsAtRequest request){
+    public EventDTO updateEventStartsAt (@PathVariable String id,@Valid @RequestBody UpdateEventStartsAtRequest request){
         return eventService.updateStartsAt(id, request.getStartsAt());
     }
 
@@ -95,7 +95,7 @@ public class EventController {
             description = "Assigns or updates the venue associated with an event."
     )
     @PatchMapping("/{id}/venue")
-    public Event updateEventVenue(@PathVariable String id, @Valid @RequestBody UpdateEventVenueRequest request){
+    public EventDTO updateEventVenue(@PathVariable String id, @Valid @RequestBody UpdateEventVenueRequest request){
         return eventService.updateVenue(id, request.getVenueId());
     }
 }

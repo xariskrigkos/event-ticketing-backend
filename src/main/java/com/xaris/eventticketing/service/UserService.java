@@ -1,9 +1,13 @@
 package com.xaris.eventticketing.service;
 
+import com.xaris.eventticketing.dto.user.UserDTO;
 import com.xaris.eventticketing.exception.UserAlreadyExistsException;
 import com.xaris.eventticketing.exception.UserNotFoundException;
+import com.xaris.eventticketing.mapper.UserMapper;
 import com.xaris.eventticketing.model.User;
 import com.xaris.eventticketing.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,45 +15,57 @@ import java.util.List;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository){
+    public UserService(UserRepository userRepository,UserMapper userMapper){
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
-    public User createUser(User user){
+    public UserDTO createUser(User user){
         if(userRepository.existsById(user.getId())){
             throw new UserAlreadyExistsException(user.getId());
         }
-        return userRepository.save(user);
+        User saved = userRepository.save(user);
+        return userMapper.toDto(saved);
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public Page<UserDTO> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userMapper::toDto);
     }
-    public User getUserById(String id){
+    public UserDTO getUserById(String id){
+        User user =  userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        return  userMapper.toDto(user);
+    }
+
+    public User getUserEntityById(String id){
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 
     public void removeUser(String id){
-        User user = getUserById(id);
+        User user = getUserEntityById(id);
         userRepository.delete(user);
     }
 
-    public User updateUserEmail(String id, String email){
-        User user = getUserById(id);
+    public UserDTO updateUserEmail(String id, String email){
+        User user = getUserEntityById(id);
         user.setEmail(email);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return  userMapper.toDto(user);
     }
 
-    public User updateUserName(String id, String name){
-        User user = getUserById(id);
+    public UserDTO updateUserName(String id, String name){
+        User user = getUserEntityById(id);
         user.setName(name);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return  userMapper.toDto(user);
     }
 
-    public User updateUserPasswordHash(String id, String passwordHash){
-        User user = getUserById(id);
+    public UserDTO updateUserPasswordHash(String id, String passwordHash){
+        User user = getUserEntityById(id);
         user.setPasswordHash(passwordHash);
-        return userRepository.save(user);
+        userRepository.save(user);
+        return  userMapper.toDto(user);
     }
 }
