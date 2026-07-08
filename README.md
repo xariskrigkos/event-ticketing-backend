@@ -8,37 +8,18 @@ This project was created to deepen my understanding of backend software engineer
 
 ---
 
-## Features
+## Current Features
 
-### Users
-- Create users
-- Update user information
-- Delete users
-- Retrieve users
-
-### Venues
-- Create venues
-- Update venue details
-- Delete venues
-- Retrieve venues
-
-### Events
-- Create events
-- Update title, location, venue and start time
-- Delete events
-- Retrieve events
-
-### Reservations
-- Create reservations
-- Automatic ticket availability validation
-- Automatic ticket count updates
-- Fulfill reservations
-- Delete reservations
-
-### Tickets
-- Automatic ticket generation after reservation fulfillment
-- Retrieve tickets by ID
-
+- RESTful API built with Spring Boot
+- CRUD operations for Users, Events, Venues, Reservations, and Tickets
+- Optimistic locking to prevent ticket overselling during concurrent reservations
+- Multi-ticket reservation support
+- DTO-based API responses
+- Pagination for collection endpoints
+- OpenAPI / Swagger documentation
+- k6 load testing for concurrent reservation validation
+- Global exception handling
+- Spring Data JPA + PostgreSQL
 ---
 
 ## Tech Stack
@@ -51,6 +32,7 @@ This project was created to deepen my understanding of backend software engineer
 - PostgreSQL
 - Maven
 - Postman
+- k6
 - Git
 
 ---
@@ -104,20 +86,20 @@ Tickets automatically generated
 
 ## Roadmap
 
-### V2
+### V2 Highlights
 - Transactions
 - Optimistic/Pessimistic locking
 - Concurrency handling
 - Prevent ticket overselling
-- Stress testing
+- k6 Stress testing
+- Response DTOs
+- Pagination
 
 ### V3
 - Authentication & Authorization
 - JWT
-- Response DTOs
-- Pagination
 - Filtering & searching
-- API documentation (OpenAPI / Swagger)
+- React frontend
 
 ### V4
 - Docker
