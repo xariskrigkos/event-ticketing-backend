@@ -134,7 +134,3 @@ Tickets automatically generated
 This project is actively being developed and improved as I continue learning backend software engineering.
 
 Feedback and suggestions are always welcome and suggested as I am trying to improve constantly.
-
-This project is actively being developed and improved as I continue learning backend software engineering.
-
-Feedback and suggestions are always welcome.
